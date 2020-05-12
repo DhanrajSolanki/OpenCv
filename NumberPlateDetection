@@ -1,0 +1,21 @@
+"""Number Plate Detection Using OpenCV"""
+import cv2
+color=(0,255,0)
+minArea=500
+number_plate=cv2.CascadeClassifier("Resources/haarcascade_russian_plate_number.xml")
+cab=cv2.VideoCapture(0)
+while True:
+    sucess,img=cab.read()
+    imggray=cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
+    numberplate1=number_plate.detectMultiScale(imggray,1.1,4)
+    for (x,y,w,h) in numberplate1:
+        area=w*h
+        if area>minArea:
+            cv2.rectangle(img,(x,y),(x+w,y+h),(255,0,0),3)
+            cv2.putText(img,"Numberplate",(x,y-5),cv2.FONT_HERSHEY_COMPLEX_SMALL,1,color,3)
+            """ROi means Region of interest"""
+            imgroi=img[y:y+h,x:x+w]
+            cv2.imshow("ROI",imgroi)
+    cv2.imshow("Result",img)
+    if cv2.waitKey(1) & 0xff ==ord('q'):
+        break
